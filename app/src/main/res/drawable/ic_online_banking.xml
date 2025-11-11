@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    
+    <!-- Bank building -->
+    <path
+        android:fillColor="#1E88E5"
+        android:pathData="M12,3L2,8v2h20V8L12,3zM4,10v8h2v-8H4zM8,10v8h2v-8H8zM12,10v8h2v-8h-2zM16,10v8h2v-8h-2zM20,10v8h2v-8H20z"/>
+    
+    <!-- Money symbol -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M12,2C6.48,2 2,6.48 2,12s4.48,10 10,10s10,-4.48 10,-10S17.52,2 12,2zM12,20c-4.41,0 -8,-3.59 -8,-8s3.59,-8 8,-8s8,3.59 8,8S16.41,20 12,20z"/>
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M11,8h2v1h-2V8zM11,10h2v1h-2v-1zM11,12h2v1h-2v-1zM11,14h2v1h-2v-1z"/>
+</vector>

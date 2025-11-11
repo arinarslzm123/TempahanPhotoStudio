@@ -1,0 +1,88 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D9C3AD"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Package info -->
+        <TextView
+            android:id="@+id/tvPackageName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Package Name"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/tvCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Category"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Subpackage info -->
+        <TextView
+            android:id="@+id/tvSubPackageName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SubPackage Name"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/tvPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Price"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/tvDuration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Duration"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Media (image/video) -->
+        <ImageView
+            android:id="@+id/ivMedia"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="Media"/>
+
+        <Button
+            android:id="@+id/btnBooking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Book Now"
+            android:layout_marginTop="24dp"/>
+
+        <!-- Button Back -->
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:layout_marginTop="12dp"/>
+
+    </LinearLayout>
+</ScrollView>

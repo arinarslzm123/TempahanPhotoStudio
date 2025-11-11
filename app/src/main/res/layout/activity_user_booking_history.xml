@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#D9C3AD">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#D9C3AD"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="16dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="History"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textColor="#000000" />
+
+        <Button
+            android:id="@+id/btnRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Refresh"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/btn_primary"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <!-- Filter Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="#FFFFFF">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filter Status:"
+            android:textSize="14sp"
+            android:textColor="#333333"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="8dp" />
+
+        <Spinner
+            android:id="@+id/spinnerStatusFilter"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/spinner_background" />
+
+    </LinearLayout>
+
+    <!-- Bookings List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewBookings"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp" />
+
+    <!-- Empty State -->
+    <TextView
+        android:id="@+id/tvEmptyMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tiada tempahan ditemui"
+        android:textSize="16sp"
+        android:textColor="#666666"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone" />
+
+</LinearLayout>

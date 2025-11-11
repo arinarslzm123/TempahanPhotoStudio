@@ -1,0 +1,300 @@
+================================================================================
+COMPLETE LIST OF ALL SQL FILES - TempahanPhotoStudio
+================================================================================
+Total Files: 116
+Location: /sql_files/
+Generated: November 11, 2025
+
+================================================================================
+DATABASE SETUP & INITIALIZATION (5)
+================================================================================
+1. database_setup.sql
+2. complete_database_setup.sql
+3. quick_database_setup.sql
+4. individual_table_queries.sql
+5. check_database_schema.sql
+
+================================================================================
+TABLE CREATION (11)
+================================================================================
+6. users_table.sql
+7. packages_table.sql
+8. sub_packages_table.sql
+9. bookings_table.sql
+10. create_users_table.sql
+11. create_bookings_table.sql
+12. create_feedback_table.sql
+13. create_package_subpackage_tables.sql
+14. create_complete_package_subpackage_system.sql
+15. create_clean_tables.sql
+16. create_videography_sub_package_table.sql
+
+================================================================================
+PHOTOGRAPHY PACKAGES (12)
+================================================================================
+17. add_photography_packages.sql
+18. add_photography_packages_to_database.sql
+19. add_photography_packages_quick.sql
+20. fix_photography_packages_correct.sql
+21. fix_photography_packages_now.sql
+22. fix_photography_database.sql
+23. check_photography_data.sql
+24. test_photography_packages.sql
+25. check_and_fix_photography_packages.sql
+26. fix_wrong_package_data.sql
+27. drop_wrong_packages.sql
+28. update_existing_packages.sql
+
+================================================================================
+VIDEOGRAPHY PACKAGES (4)
+================================================================================
+29. add_videography_data.sql
+30. add_videography_packages_first.sql
+31. setup_videography_database.sql
+32. videography_database_setup.sql
+
+================================================================================
+SUB-PACKAGES (7)
+================================================================================
+33. add_subpackages_for_existing_packages.sql
+34. add_subpackages_for_package_17.sql
+35. add_subpackages_if_missing.sql
+36. check_subpackages_issue.sql
+37. check_duplicate_sub_packages.sql
+38. remove_duplicate_sub_packages.sql
+39. delete_package_subpackage_tables.sql
+
+================================================================================
+PRICE MANAGEMENT (11)
+================================================================================
+40. add_price_columns.sql
+41. add_price_columns_to_database.sql
+42. add_price_column_to_packages.sql
+43. simple_add_price_columns.sql
+44. quick_fix_price_columns.sql
+45. update_existing_price_data.sql
+46. fix_all_total_amount_columns.sql
+47. fix_packages_total_amount.sql
+48. fix_sub_packages_total_amount.sql
+49. update_database_to_total_amount.sql
+50. test_database_columns.sql
+
+================================================================================
+USER MANAGEMENT (13)
+================================================================================
+51. create_admin_user.sql
+52. simple_user_setup.sql
+53. comprehensive_user_setup.sql
+54. ensure_user_data.sql
+55. insert_sample_user.sql
+56. check_user_data.sql
+57. add_phone_number_to_users_table.sql
+58. add_profile_image_column.sql
+59. fix_user_roles_and_profile.sql
+60. test_user_registration.sql
+61. test_simple_registration.sql
+62. test_registration_process.sql
+63. verify_registration_connection.sql
+
+================================================================================
+BOOKING MANAGEMENT (16)
+================================================================================
+64. test_booking_functionality.sql
+65. test_updated_booking_functionality.sql
+66. test_booking_database_insert.sql
+67. test_booking_constructor_fix.sql
+68. test_booking_activity_debug.sql
+69. test_all_booking_methods.sql
+70. test_booking_retrieval.sql
+71. verify_booking_flow.sql
+72. test_admin_approval_workflow.sql
+73. test_admin_confirm_booking.sql
+74. test_new_booking_pending_status.sql
+75. verify_admin_booking_actions.sql
+76. test_user_specific_bookings.sql
+77. test_user_specific_bookings_debug.sql
+78. test_user_specific_bookings_final.sql
+79. debug_user_specific_bookings.sql
+
+================================================================================
+OVERLAP PREVENTION (6)
+================================================================================
+80. check_overlapping_bookings.sql
+81. test_overlapping_check_directly.sql
+82. fix_existing_overlapping_bookings.sql
+83. add_unique_constraint_for_overlapping.sql
+84. add_database_trigger_prevent_overlapping.sql
+85. normalize_and_add_unique_constraint.sql
+
+================================================================================
+FEEDBACK SYSTEM (3)
+================================================================================
+86. create_feedback_table.sql
+87. feedback_table_queries.sql
+88. check_and_remove_duplicate_feedback.sql
+
+================================================================================
+TESTING & DEBUGGING (15)
+================================================================================
+89. test_database_connection.sql
+90. test_database_connection_and_bookings.sql
+91. test_and_fix_database.sql
+92. test_user_login_profile_flow.sql
+93. test_user_profile_display.sql
+94. test_package_subpackage_selection_flow.sql
+95. test_date_format.sql
+96. test_date_conversion_manual.sql
+97. test_name_field.sql
+98. test_packages_database.sql
+99. test_packages_display.sql
+100. debug_database_error.sql
+101. debug_database_packages.sql
+102. debug_package_subpackage_matching.sql
+103. view_complete_booking_data.sql
+
+================================================================================
+DATA VERIFICATION (8)
+================================================================================
+104. verify_database_data.sql
+105. check_database_structure.sql
+106. check_package_ids.sql
+107. check_package_subpackage_relationship.sql
+108. check_packages_table_structure.sql
+109. fix_database_issues.sql
+110. complete_packages_database_fix.sql
+111. fix_packages_table_structure.sql
+
+================================================================================
+TABLE MAINTENANCE (6)
+================================================================================
+112. drop_tables.sql
+113. simple_delete_tables.sql
+114. delete_tables_with_foreign_keys.sql
+115. drop_columns_with_constraints.sql
+116. drop_columns_and_create_tables.sql
+
+================================================================================
+ALPHABETICAL LISTING OF ALL FILES
+================================================================================
+
+add_database_trigger_prevent_overlapping.sql
+add_phone_number_to_users_table.sql
+add_photography_packages.sql
+add_photography_packages_quick.sql
+add_photography_packages_to_database.sql
+add_price_column_to_packages.sql
+add_price_columns.sql
+add_price_columns_to_database.sql
+add_profile_image_column.sql
+add_subpackages_for_existing_packages.sql
+add_subpackages_for_package_17.sql
+add_subpackages_if_missing.sql
+add_unique_constraint_for_overlapping.sql
+add_videography_data.sql
+add_videography_packages_first.sql
+bookings_table.sql
+check_and_fix_photography_packages.sql
+check_and_remove_duplicate_feedback.sql
+check_database_schema.sql
+check_database_structure.sql
+check_duplicate_sub_packages.sql
+check_overlapping_bookings.sql
+check_package_ids.sql
+check_package_subpackage_relationship.sql
+check_packages_table_structure.sql
+check_photography_data.sql
+check_subpackages_issue.sql
+check_user_data.sql
+complete_database_setup.sql
+complete_packages_database_fix.sql
+comprehensive_user_setup.sql
+create_admin_user.sql
+create_bookings_table.sql
+create_clean_tables.sql
+create_complete_package_subpackage_system.sql
+create_feedback_table.sql
+create_package_subpackage_tables.sql
+create_users_table.sql
+create_videography_sub_package_table.sql
+database_setup.sql
+debug_database_error.sql
+debug_database_packages.sql
+debug_package_subpackage_matching.sql
+debug_user_specific_bookings.sql
+delete_package_subpackage_tables.sql
+delete_tables_with_foreign_keys.sql
+drop_columns_and_create_tables.sql
+drop_columns_with_constraints.sql
+drop_tables.sql
+drop_wrong_packages.sql
+ensure_user_data.sql
+feedback_table_queries.sql
+fix_all_total_amount_columns.sql
+fix_database_issues.sql
+fix_existing_overlapping_bookings.sql
+fix_packages_table_structure.sql
+fix_packages_total_amount.sql
+fix_photography_database.sql
+fix_photography_packages_correct.sql
+fix_photography_packages_now.sql
+fix_sub_packages_total_amount.sql
+fix_user_roles_and_profile.sql
+fix_wrong_package_data.sql
+individual_table_queries.sql
+insert_sample_user.sql
+normalize_and_add_unique_constraint.sql
+packages_table.sql
+quick_database_setup.sql
+quick_fix_price_columns.sql
+remove_duplicate_sub_packages.sql
+setup_videography_database.sql
+simple_add_price_columns.sql
+simple_delete_tables.sql
+simple_user_setup.sql
+sub_packages_table.sql
+test_admin_approval_workflow.sql
+test_admin_confirm_booking.sql
+test_all_booking_methods.sql
+test_and_fix_database.sql
+test_booking_activity_debug.sql
+test_booking_constructor_fix.sql
+test_booking_database_insert.sql
+test_booking_functionality.sql
+test_booking_retrieval.sql
+test_database_columns.sql
+test_database_connection.sql
+test_database_connection_and_bookings.sql
+test_date_conversion_manual.sql
+test_date_format.sql
+test_name_field.sql
+test_new_booking_pending_status.sql
+test_overlapping_check_directly.sql
+test_package_subpackage_selection_flow.sql
+test_packages_database.sql
+test_packages_display.sql
+test_photography_packages.sql
+test_registration_process.sql
+test_simple_registration.sql
+test_updated_booking_functionality.sql
+test_user_login_profile_flow.sql
+test_user_profile_display.sql
+test_user_registration.sql
+test_user_specific_bookings.sql
+test_user_specific_bookings_debug.sql
+test_user_specific_bookings_final.sql
+update_database_to_total_amount.sql
+update_existing_packages.sql
+update_existing_price_data.sql
+update_packages_table_structure.sql
+users_table.sql
+verify_admin_booking_actions.sql
+verify_booking_flow.sql
+verify_database_data.sql
+verify_registration_connection.sql
+videography_database_setup.sql
+view_complete_booking_data.sql
+
+================================================================================
+END OF FILE LIST
+================================================================================
+

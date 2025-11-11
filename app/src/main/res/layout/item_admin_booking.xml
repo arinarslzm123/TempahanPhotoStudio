@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/card_background"
+    android:padding="16dp"
+    android:layout_margin="4dp"
+    android:elevation="2dp">
+
+    <!-- Header Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tvBookingId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ID: 001"
+            android:textSize="12sp"
+            android:textColor="#2196F3"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pending"
+            android:textSize="12sp"
+            android:textColor="#FF9800"
+            android:background="@drawable/status_background"
+            android:padding="4dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp" />
+
+    </LinearLayout>
+
+    <!-- Customer Name -->
+    <TextView
+        android:id="@+id/tvCustomerName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Custmer Name"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#333333"
+        android:layout_marginTop="8dp" />
+
+    <!-- Package Name -->
+    <TextView
+        android:id="@+id/tvPackageName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Package Name"
+        android:textSize="14sp"
+        android:textColor="#666666"
+        android:layout_marginTop="4dp" />
+
+    <!-- Event Date and Amount -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/tvEventDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Date: 15 Dec 2024"
+            android:textSize="12sp"
+            android:textColor="#666666" />
+
+        <TextView
+            android:id="@+id/tvTotalAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RM 1,200.00"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#FF5722" />
+
+    </LinearLayout>
+
+    <!-- Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp">
+
+        <Button
+            android:id="@+id/btnConfirm"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:text="Comfirm"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/btn_primary"
+            android:textSize="12sp"
+            android:layout_marginEnd="4dp" />
+
+        <Button
+            android:id="@+id/btnViewDetails"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:text="Details"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/btn_outline"
+            android:textSize="12sp"
+            android:layout_marginStart="4dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,82 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D9C3AD"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Back Button -->
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="start"
+            android:layout_marginBottom="16dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Back" />
+
+        <EditText
+            android:id="@+id/etSubPackageName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Sub Package Name"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/etPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Price (RM)"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/etDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Description"
+            android:inputType="textMultiLine"
+            android:minLines="3" />
+
+        <EditText
+            android:id="@+id/etDuration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Duration"
+            android:inputType="text" />
+
+        <!-- Media Upload Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Upload Media (Image)"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <ImageView
+            android:id="@+id/ivMediaPreview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:background="#DDDDDD"
+            android:contentDescription="Media Preview"
+            android:layout_marginBottom="8dp"/>
+
+        <Button
+            android:id="@+id/btnChooseMedia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Choose Image" />
+
+        <Button
+            android:id="@+id/btnSaveSubPackage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:layout_marginTop="16dp"/>
+    </LinearLayout>
+</ScrollView>
