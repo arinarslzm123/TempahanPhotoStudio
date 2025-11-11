@@ -12,12 +12,20 @@ import java.util.ArrayList;
 
 public class ConnectionClass {
 
-    // Ganti ikut server/database anda
-    String ip = "10.0.2.2";
-    String db = "TempahanPhotoStudio";
-    String username = "sa";
-    String password = "12345";
-    String port = "1433";
+    // ===== OLD CONNECTION (COMMENTED OUT) =====
+    // String ip = "10.0.2.2";
+    // String db = "TempahanPhotoStudio";
+    // String username = "sa";
+    // String password = "12345";
+    // String port = "1433";
+    
+    // ===== NEW CONNECTION - DOCKER SQL SERVER =====
+    // Docker SQL Server connection (localhost for emulator = 10.0.2.2)
+    String ip = "10.0.2.2";           // Android Emulator special IP for host machine
+    String db = "TempahanPhotoStudio"; // Database name (created in Docker)
+    String username = "sa";            // SQL Server admin user
+    String password = "Fbi22031978&";  // Your Docker SQL Server password
+    String port = "1433";              // SQL Server default port
 
     // Buat connection ke SQL Server
     public Connection CONN() {
