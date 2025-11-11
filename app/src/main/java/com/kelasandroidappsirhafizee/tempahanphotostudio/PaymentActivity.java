@@ -2,28 +2,55 @@ package com.kelasandroidappsirhafizee.tempahanphotostudio;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Patterns;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+
+import com.kelasandroidappsirhafizee.tempahanphotostudio.payment.ToyyibPayRepository;
+import com.kelasandroidappsirhafizee.tempahanphotostudio.payment.requests.CreateBillRequest;
+import com.kelasandroidappsirhafizee.tempahanphotostudio.payment.responses.CreateBillResponse;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.UUID;
 
+/**
+ * Payment confirmation and ToyyibPay integration activity
+ * Copied and adapted from MizrahBeauty project
+ */
 public class PaymentActivity extends AppCompatActivity {
     
+    // UI Components
     private TextView tvPackageName, tvSubPackage, tvEventDate, tvTotalAmount;
+    private EditText etCustomerName, etCustomerEmail, etCustomerPhone;
     private Button btnContinue;
-    private String selectedPaymentMethod = "";
     private ImageButton btnBack;
+    private ProgressBar progressBar;
     
+    // Data
     private BookingDetailsModel bookingDetails;
     private String userRole, username;
     private int userId;
     private ConnectionClass connectionClass;
+    private ToyyibPayRepository toyyibPayRepository;
+    
+    // Payment configuration
+    private static final String TOYYIB_RETURN_URL = "tempahanphotostudio://payment/result";
+    private static final String TOYYIB_CALLBACK_URL = "https://tempahanphotostudio.onrender.com/toyyibpay/callback";
+    
+    private String currentBillCode;
+    private ActivityResultLauncher<Intent> paymentLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,22 +63,63 @@ public class PaymentActivity extends AppCompatActivity {
         username = getIntent().getStringExtra("USERNAME");
         userId = getIntent().getIntExtra("USER_ID", 1);
         
-        // Initialize connection class
+        // Initialize connection class and repository
         connectionClass = new ConnectionClass();
+        toyyibPayRepository = new ToyyibPayRepository();
+        
+        // Setup payment result launcher
+        setupPaymentLauncher();
 
         // Initialize views
         initializeViews();
         
-        // ✅ Set default payment method to ToyyibPay (no user selection needed)
-        selectedPaymentMethod = "ToyyibPay";
-
-        System.out.println("DEBUG - PaymentActivity: Using ToyyibPay as default payment method");
-        
-        // Setup payment summary
+        // Setup payment summary and customer info
         setupPaymentSummary();
+        populateCustomerInfo();
         
-        // Setup click listeners (only for back button and continue button)
+        // Setup click listeners
         setupClickListeners();
+    }
+    
+    private void setupPaymentLauncher() {
+        paymentLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                android.util.Log.d("ToyyibPay", "Payment WebView returned with result code: " + result.getResultCode());
+                
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Intent data = result.getData();
+                    String status = data.getStringExtra(PaymentWebViewActivity.RESULT_EXTRA_STATUS);
+                    String billCode = data.getStringExtra(PaymentWebViewActivity.RESULT_EXTRA_BILL_CODE);
+                    String statusId = data.getStringExtra("status_id");
+                    String msg = data.getStringExtra("msg");
+                    String reason = data.getStringExtra("reason");
+                    String transactionId = data.getStringExtra("transaction_id");
+                    
+                    android.util.Log.d("ToyyibPay", "Payment result - Status: " + status + ", BillCode: " + billCode);
+                    
+                    if ("SUCCESS".equals(status)) {
+                        // Payment successful - save booking and navigate to invoice
+                        Toast.makeText(this, "Payment successful!", Toast.LENGTH_SHORT).show();
+                        saveBookingToDatabase("ToyyibPay", "Paid", billCode, transactionId);
+                        
+                        // ===== SUPABASE INTEGRATION (COMMENTED OUT AS REQUESTED) =====
+                        // TODO: Save payment transaction to Supabase
+                        // savePaymentToSupabase(billCode, transactionId, statusId, msg, reason, status);
+                        // ============================================================
+                        
+                    } else if ("PENDING".equals(status)) {
+                        Toast.makeText(this, "Payment pending. Please wait for confirmation.", Toast.LENGTH_SHORT).show();
+                        saveBookingToDatabase("ToyyibPay", "Pending", billCode, transactionId);
+                    } else {
+                        Toast.makeText(this, "Payment " + status.toLowerCase() + ": " + (reason != null ? reason : msg), Toast.LENGTH_LONG).show();
+                    }
+                } else if (result.getResultCode() == RESULT_CANCELED) {
+                    android.util.Log.d("ToyyibPay", "Payment cancelled by user");
+                    Toast.makeText(this, "Payment cancelled", Toast.LENGTH_SHORT).show();
+                }
+            }
+        );
     }
 
     private void initializeViews() {
@@ -59,6 +127,11 @@ public class PaymentActivity extends AppCompatActivity {
         tvSubPackage = findViewById(R.id.tvSubPackage);
         tvEventDate = findViewById(R.id.tvEventDate);
         tvTotalAmount = findViewById(R.id.tvTotalAmount);
+        
+        etCustomerName = findViewById(R.id.etCustomerName);
+        etCustomerEmail = findViewById(R.id.etCustomerEmail);
+        etCustomerPhone = findViewById(R.id.etCustomerPhone);
+        
         btnContinue = findViewById(R.id.btnContinue);
         btnBack = findViewById(R.id.btnBack);
     }
@@ -78,16 +151,10 @@ public class PaymentActivity extends AppCompatActivity {
         });
 
         btnContinue.setOnClickListener(v -> {
-            // Payment method already set to ToyyibPay - no validation needed
-            System.out.println("DEBUG - PaymentActivity: Continue button clicked, processing with ToyyibPay");
-            
-            if (bookingDetails == null) {
-                Toast.makeText(this, "Booking details not found", Toast.LENGTH_SHORT).show();
-                return;
+            // Validate form and initiate payment
+            if (validateCustomerInfo()) {
+                initiateToyyibPayFlow();
             }
-            
-            // Process payment with ToyyibPay
-            processPayment();
         });
     }
 
@@ -95,29 +162,133 @@ public class PaymentActivity extends AppCompatActivity {
         if (bookingDetails != null) {
             tvPackageName.setText(bookingDetails.getPackageName());
             tvSubPackage.setText(bookingDetails.getSubPackageName());
-            tvEventDate.setText(bookingDetails.getEventDate());
+            tvEventDate.setText(bookingDetails.getEventDate() + " " + bookingDetails.getEventTime());
             tvTotalAmount.setText("RM " + String.format("%.2f", bookingDetails.getPrice()));
         }
     }
-
-
-    private void processPayment() {
-        // Payment method is ToyyibPay
-        String paymentInfo = "ToyyibPay";
-        
-        System.out.println("DEBUG - PaymentActivity processPayment: " + paymentInfo);
-        Toast.makeText(this, "Memproses pembayaran melalui ToyyibPay...", Toast.LENGTH_SHORT).show();
-        
-        // Save booking to database
-        if (bookingDetails != null) {
-            saveBookingToDatabase(paymentInfo);
-        } else {
-            Toast.makeText(this, "Booking details not found", Toast.LENGTH_SHORT).show();
-            finish(); // Close activity if no booking details
+    
+    private void populateCustomerInfo() {
+        // Get user info from session if available
+        UserSessionManager sessionManager = new UserSessionManager(this);
+        if (sessionManager.isLoggedIn()) {
+            String sessionUsername = sessionManager.getUsername();
+            String sessionEmail = sessionManager.getUserEmail();
+            String sessionPhone = sessionManager.getPhone();
+            
+            if (!TextUtils.isEmpty(sessionUsername)) {
+                etCustomerName.setText(sessionUsername);
+            }
+            if (!TextUtils.isEmpty(sessionEmail)) {
+                etCustomerEmail.setText(sessionEmail);
+            }
+            if (!TextUtils.isEmpty(sessionPhone)) {
+                etCustomerPhone.setText(sessionPhone);
+            }
         }
     }
     
-    private void saveBookingToDatabase(String paymentMethod) {
+    private boolean validateCustomerInfo() {
+        String name = etCustomerName.getText().toString().trim();
+        String email = etCustomerEmail.getText().toString().trim();
+        String phone = etCustomerPhone.getText().toString().trim();
+        
+        if (TextUtils.isEmpty(name)) {
+            etCustomerName.setError("Name is required");
+            etCustomerName.requestFocus();
+            return false;
+        }
+        
+        if (TextUtils.isEmpty(email)) {
+            etCustomerEmail.setError("Email is required");
+            etCustomerEmail.requestFocus();
+            return false;
+        }
+        
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            etCustomerEmail.setError("Please enter a valid email");
+            etCustomerEmail.requestFocus();
+            return false;
+        }
+        
+        if (TextUtils.isEmpty(phone)) {
+            etCustomerPhone.setError("Phone number is required");
+            etCustomerPhone.requestFocus();
+            return false;
+        }
+        
+        return true;
+    }
+    
+    private void initiateToyyibPayFlow() {
+        if (bookingDetails == null) {
+            Toast.makeText(this, "Booking details not found", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        String customerName = etCustomerName.getText().toString().trim();
+        String customerEmail = etCustomerEmail.getText().toString().trim();
+        String customerPhone = etCustomerPhone.getText().toString().trim();
+        double amount = bookingDetails.getPrice();
+        
+        String description = "Booking: " + bookingDetails.getPackageName() + 
+                           " - " + bookingDetails.getSubPackageName() + 
+                           " on " + bookingDetails.getEventDate();
+        
+        String referenceId = UUID.randomUUID().toString();
+        
+        btnContinue.setEnabled(false);
+        btnContinue.setText("Creating payment...");
+        
+        CreateBillRequest request = new CreateBillRequest(
+                amount,
+                description,
+                customerName,
+                customerEmail,
+                customerPhone,
+                referenceId,
+                TOYYIB_RETURN_URL,
+                TOYYIB_CALLBACK_URL
+        );
+        
+        android.util.Log.d("ToyyibPay", "Creating bill with amount: RM " + amount);
+        
+        toyyibPayRepository.createBill(request, new ToyyibPayRepository.CreateBillCallback() {
+            @Override
+            public void onSuccess(CreateBillResponse response) {
+                btnContinue.setEnabled(true);
+                btnContinue.setText("Proceed to Payment");
+                
+                currentBillCode = response.getBillCode();
+                android.util.Log.d("ToyyibPay", "Bill created successfully: " + currentBillCode);
+                android.util.Log.d("ToyyibPay", "Payment URL: " + response.getPaymentUrl());
+                
+                if (!TextUtils.isEmpty(response.getPaymentUrl())) {
+                    // Launch WebView for payment
+                    Intent intent = new Intent(PaymentActivity.this, PaymentWebViewActivity.class);
+                    intent.putExtra(PaymentWebViewActivity.EXTRA_PAYMENT_URL, response.getPaymentUrl());
+                    intent.putExtra(PaymentWebViewActivity.EXTRA_RETURN_URL, TOYYIB_RETURN_URL);
+                    intent.putExtra(PaymentWebViewActivity.EXTRA_BILL_CODE, currentBillCode);
+                    paymentLauncher.launch(intent);
+                } else {
+                    Toast.makeText(PaymentActivity.this, "Payment URL not available", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                btnContinue.setEnabled(true);
+                btnContinue.setText("Proceed to Payment");
+                
+                android.util.Log.e("ToyyibPay", "Error creating bill", t);
+                Toast.makeText(PaymentActivity.this, 
+                    "Error creating payment: " + t.getMessage() + 
+                    "\n\nPlease ensure backend service is running at: " + TOYYIB_CALLBACK_URL, 
+                    Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void saveBookingToDatabase(String paymentMethod, String paymentStatus, String billCode, String transactionId) {
         new Thread(() -> {
             try {
                 // Ensure bookings table exists
@@ -131,7 +302,6 @@ public class PaymentActivity extends AppCompatActivity {
                 }
 
                 // Get package and sub-package IDs from booking details
-                // We need to find the IDs based on the names
                 PackageModel packageModel = connectionClass.getPackageByName(bookingDetails.getPackageName());
                 SubPackageModel subPackageModel = connectionClass.getSubPackageByName(bookingDetails.getPackageClass());
                 
@@ -155,11 +325,11 @@ public class PaymentActivity extends AppCompatActivity {
                 booking.setEventDate(formattedEventDate);
                 
                 booking.setEventTime(bookingDetails.getEventTime());
-                booking.setStatus("Unpaid"); // ✅ Set status to Unpaid (belum bayar)
+                booking.setStatus(paymentStatus);
                 booking.setPrice(bookingDetails.getPrice());
-                booking.setPaymentMethod(paymentMethod);
-                booking.setPaymentStatus("Unpaid"); // ✅ Set payment status to Unpaid
-                booking.setNotes("Tempahan dibuat melalui aplikasi - " + bookingDetails.getPackageClass());
+                booking.setPaymentMethod(paymentMethod + " (Bill: " + billCode + ")");
+                booking.setPaymentStatus(paymentStatus);
+                booking.setNotes("ToyyibPay Transaction ID: " + transactionId + " - " + bookingDetails.getPackageClass());
                 booking.setCreatedAt(new Date());
 
                 // Debug logging
@@ -168,56 +338,20 @@ public class PaymentActivity extends AppCompatActivity {
                 System.out.println("Package ID: " + packageModel.getId());
                 System.out.println("Sub-Package ID: " + subPackageModel.getId());
                 System.out.println("Event Date: " + formattedEventDate);
-                System.out.println("Event Time: " + bookingDetails.getEventTime());
-                System.out.println("Total Amount: " + bookingDetails.getPrice());
-                System.out.println("Payment Method: " + paymentMethod);
+                System.out.println("Payment Status: " + paymentStatus);
+                System.out.println("Bill Code: " + billCode);
 
-                // Double-check for overlapping bookings before saving (safety measure)
-                System.out.println("DEBUG PaymentActivity - Double-checking for overlapping bookings before save");
-                System.out.println("DEBUG PaymentActivity - User ID: " + userId);
-                System.out.println("DEBUG PaymentActivity - Event Date: " + formattedEventDate);
-                System.out.println("DEBUG PaymentActivity - Event Time: " + bookingDetails.getEventTime());
-                
-                boolean hasOverlap = connectionClass.checkOverlappingBooking(userId, formattedEventDate, bookingDetails.getEventTime());
-                if (hasOverlap) {
-                    System.out.println("DEBUG PaymentActivity - OVERLAP DETECTED! Preventing save.");
-                    runOnUiThread(() -> {
-                        Toast.makeText(PaymentActivity.this, 
-                                "Tempahan pada tarikh dan masa ini sudah wujud. Anda tidak boleh membuat tempahan bertindih pada tarikh dan masa yang sama. Sila pilih tarikh atau masa lain.", 
-                                Toast.LENGTH_LONG).show();
-                    });
-                    return;
-                }
-                
-                System.out.println("DEBUG PaymentActivity - No overlap detected, proceeding with save.");
-
-                // Save to database (this will also check for overlaps internally)
+                // Save to database
                 String result = connectionClass.addBooking(booking);
                 
                 runOnUiThread(() -> {
-                    // Check if result contains error about overlapping
-                    if (result != null && result.contains("Error:") && result.contains("tarikh dan masa")) {
-                        Toast.makeText(PaymentActivity.this, result.replace("Error: ", ""), Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    
                     if ("success".equals(result) || result.contains("successfully")) {
-                        Toast.makeText(PaymentActivity.this, 
-                                "Tempahan berjaya dibuat!\nPakej: " + bookingDetails.getPackageName() + 
-                                "\nSub Package: " + bookingDetails.getPackageClass() + 
-                                "\nHarga: RM " + String.format("%.2f", bookingDetails.getPrice()) +
-                                "\nTarikh: " + bookingDetails.getEventDate() + "\nMasa: " + bookingDetails.getEventTime() +
-                                "\n\nStatus: Unpaid - Sila buat pembayaran", 
-                                Toast.LENGTH_LONG).show();
-                        
-                        // Update booking details with payment method and booking date
+                        // Update booking details
                         bookingDetails.setPaymentMethod(paymentMethod);
-                        bookingDetails.setPaymentStatus("Unpaid"); // ✅ Set to Unpaid
-                        bookingDetails.setStatus("Unpaid"); // ✅ Set to Unpaid
-                        
-                        // Set booking date (today's date when booking is made)
+                        bookingDetails.setPaymentStatus(paymentStatus);
+                        bookingDetails.setStatus(paymentStatus);
                         bookingDetails.setBookingDate(booking.getBookingDate());
-                        bookingDetails.setCreatedAt(new Date()); // Also set createdAt for InvoiceActivity
+                        bookingDetails.setCreatedAt(new Date());
                         
                         // Navigate to invoice
                         Intent intent = new Intent(PaymentActivity.this, InvoiceActivity.class);
@@ -225,6 +359,8 @@ public class PaymentActivity extends AppCompatActivity {
                         intent.putExtra("USER_ID", userId);
                         intent.putExtra("ROLE", userRole);
                         intent.putExtra("USERNAME", username);
+                        intent.putExtra("BILL_CODE", billCode);
+                        intent.putExtra("TRANSACTION_ID", transactionId);
                         startActivity(intent);
                         finish();
                     } else {
@@ -241,6 +377,33 @@ public class PaymentActivity extends AppCompatActivity {
             }
         }).start();
     }
+    
+    // ===== SUPABASE INTEGRATION METHOD (COMMENTED OUT AS REQUESTED) =====
+    /*
+    private void savePaymentToSupabase(String billCode, String transactionId, 
+                                       String statusId, String msg, String reason, String status) {
+        // TODO: Implement Supabase payment transaction saving
+        // This should save to the payment_transactions table you created in Supabase
+        
+        // Example structure:
+        // PaymentTransaction transaction = new PaymentTransaction();
+        // transaction.setBillCode(billCode);
+        // transaction.setTransactionId(transactionId);
+        // transaction.setOrderId(bookingDetails reference);
+        // transaction.setPaymentStatus(status);
+        // transaction.setAmount(bookingDetails.getPrice());
+        // transaction.setCustomerName(etCustomerName.getText().toString());
+        // transaction.setCustomerEmail(etCustomerEmail.getText().toString());
+        // transaction.setCustomerPhone(etCustomerPhone.getText().toString());
+        // transaction.setServiceName(bookingDetails.getPackageName() + " - " + bookingDetails.getSubPackageName());
+        // transaction.setTransactionTime(new Date());
+        
+        // SupabaseClient.savePaymentTransaction(transaction, callback);
+        
+        android.util.Log.d("ToyyibPay", "Supabase integration not implemented yet");
+    }
+    */
+    // ====================================================================
     
     private String convertDateFormat(String inputDate) {
         try {

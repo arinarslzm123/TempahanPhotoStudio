@@ -1,7 +1,7 @@
 {
-  "name": "mizrahbeauty-toyyibpay-service",
+  "name": "tempahanphotostudio-toyyibpay-service",
   "version": "0.1.0",
-  "description": "Lightweight ToyyibPay webhook and API helper service for Mizrah Beauty app",
+  "description": "Lightweight ToyyibPay webhook and API helper service for TempahanPhotoStudio app",
   "main": "src/index.js",
   "type": "module",
   "scripts": {

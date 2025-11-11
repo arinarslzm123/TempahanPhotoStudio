@@ -85,6 +85,21 @@
             android:name=".PaymentActivity"
             android:exported="false" />
         <activity
+            android:name=".PaymentWebViewActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <!-- Deep link intent filter for ToyyibPay return URL -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="tempahanphotostudio"
+                    android:host="payment"
+                    android:path="/result" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".Splash"
             android:exported="true">
             <intent-filter>

@@ -28,7 +28,7 @@ app.use(morgan(logFormat));
 app.get('/', (_req, res) => {
   res.json({
     status: 'ok',
-    service: 'MizrahBeauty ToyyibPay Service',
+    service: 'TempahanPhotoStudio ToyyibPay Service',
     docs: '/docs'
   });
 });
@@ -40,7 +40,9 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
-app.listen(port, () => {
-  console.log(`ToyyibPay service listening on port ${port}`);
+// ⚠️ IMPORTANT: Bind to 0.0.0.0 for Render to work properly
+// Without this, Render will return 502 Bad Gateway
+app.listen(port, '0.0.0.0', () => {
+  console.log(`ToyyibPay service listening on port ${port} (0.0.0.0)`);
 });
 
